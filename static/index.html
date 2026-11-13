@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1422">
+  <meta name="description" content="A human-supervised AI incident triage agent with bounded tools and approval-gated simulations.">
+  <title>IncidentPilot — Incident response, with a human in command</title>
+  <style>
+    :root{--ink:#eef3fb;--muted:#93a4ba;--dim:#61748d;--bg:#0b1422;--panel:#111e2e;--panel2:#162538;--line:#26384e;--blue:#79aaff;--mint:#78e4c1;--amber:#ffca83;--red:#ff938a;--shadow:0 18px 55px #02081366;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:dark}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 560px at 70% -10%,#17385a66,transparent 65%),var(--bg);color:var(--ink);min-height:100vh}button,select,textarea{font:inherit}button{cursor:pointer}.shell{max-width:1240px;margin:auto;padding:26px 28px 56px}.topbar{height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff12}.brand{display:flex;align-items:center;gap:11px;font-size:15px;font-weight:760;letter-spacing:-.02em}.mark{width:33px;height:33px;display:grid;place-items:center;border-radius:11px;background:linear-gradient(145deg,#76a9ff,#5970d9);color:#091321;font-size:18px;font-weight:900;box-shadow:0 5px 22px #6d97ff55}.top-right{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);padding:7px 10px;border-radius:99px;background:#101c2a}.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px currentColor}.dot.warn{background:var(--amber)}.hero{padding:47px 0 29px;display:flex;justify-content:space-between;gap:24px;align-items:flex-end}.eyebrow{font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:.16em;font-weight:800}.hero h1{max-width:740px;font-size:clamp(33px,5vw,55px);line-height:1.04;letter-spacing:-.055em;margin:13px 0 12px}.hero p{margin:0;max-width:660px;color:var(--muted);font-size:15px;line-height:1.65}.hero-stat{color:var(--muted);font-size:11px;min-width:172px}.hero-stat strong{font-size:22px;display:block;color:var(--ink);letter-spacing:-.04em;margin-bottom:5px}.grid{display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:18px;align-items:start}.card{background:linear-gradient(160deg,#152539,#101b2a 75%);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.input-card{padding:21px;position:sticky;top:16px}.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.card-head h2,.output-title{font-size:15px;margin:0;letter-spacing:-.02em}.step-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.14em;font-weight:750}.field{margin:16px 0}.field label{display:block;color:#cfdae9;font-size:12px;font-weight:650;margin:0 0 8px}.field small{display:block;color:var(--dim);font-size:10px;line-height:1.5;margin-top:7px}.select-wrap{position:relative}.select-wrap:after{content:"⌄";position:absolute;right:13px;top:8px;color:var(--muted);pointer-events:none}select,textarea{width:100%;border:1px solid #30445c;border-radius:10px;background:#0b1624;color:var(--ink);padding:11px 12px;font-size:12px;outline:none}select{appearance:none;padding-right:33px}textarea{min-height:90px;resize:vertical;line-height:1.5}select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.mode{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:5px;background:#0b1624;border:1px solid var(--line);border-radius:11px}.mode button{border:0;background:transparent;color:var(--muted);font-size:11px;padding:9px;border-radius:7px}.mode button.active{background:#263c57;color:var(--ink);box-shadow:inset 0 0 0 1px #385476}.privacy{font-size:10px;line-height:1.55;color:var(--dim);background:#0e1a28;border:1px solid #203249;border-radius:9px;padding:10px}.primary{border:0;width:100%;border-radius:10px;padding:12px 14px;background:linear-gradient(130deg,#91bdff,#6b91f6);color:#071321;font-weight:800;font-size:12px;box-shadow:0 7px 20px #7196f033}.primary:disabled{opacity:.55;cursor:wait}.side-note{font-size:10px;color:var(--dim);margin:12px 0 0;line-height:1.5}.workspace{min-width:0}.overview{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:13px}.metric{padding:14px 15px;min-height:84px}.metric span{font-size:10px;color:var(--muted);display:block;margin-bottom:9px}.metric strong{font-size:14px;letter-spacing:-.02em}.metric strong.green{color:var(--mint)}.metric strong.blue{color:var(--blue)}.metric strong.amber{color:var(--amber)}.result{padding:21px;min-height:230px}.empty{height:214px;display:grid;place-items:center;text-align:center;color:var(--dim);padding:20px}.empty-icon{font-size:27px;color:#5376a0;margin-bottom:12px}.empty h3{color:#c6d5e9;font-size:14px;margin:0 0 7px}.empty p{font-size:11px;max-width:320px;line-height:1.6;margin:0}.result-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}.result-head p{font-size:11px;color:var(--muted);margin:6px 0 0;line-height:1.55}.label{font-size:9px;text-transform:uppercase;letter-spacing:.12em;border:1px solid #365275;background:#13253a;color:#9cc2ff;padding:6px 8px;border-radius:99px;white-space:nowrap}.assessment{font-size:14px;line-height:1.6;color:#e6edf7;margin:8px 0 18px}.columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.subcard{border:1px solid #293d53;background:#101b29;border-radius:11px;padding:13px}.subcard h3{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px}.subcard p,.subcard li{font-size:11px;color:#bdcadb;line-height:1.55}.subcard ul{padding-left:16px;margin:0}.subcard li+li{margin-top:6px}.trace{margin-top:14px;padding:17px 20px}.trace-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}.trace-bar span{font-size:10px;color:var(--dim)}.trace-list{display:grid;gap:7px}.trace-item{border:1px solid #26384d;border-radius:9px;background:#101b29;overflow:hidden}.trace-item summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;font-size:11px;color:#d5e0ee}.trace-item summary::-webkit-details-marker{display:none}.trace-item summary:before{content:"✓";display:grid;place-items:center;width:18px;height:18px;border-radius:50%;color:var(--mint);background:#1d3a3a;font-size:10px}.trace-item pre{white-space:pre-wrap;word-break:break-word;color:#9db1c9;font:10px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;margin:0;padding:0 12px 12px}.approval{margin-top:14px;padding:17px 19px;border:1px solid #735632;background:linear-gradient(135deg,#31271d,#1d2024);border-radius:13px}.approval-top{display:flex;gap:11px;align-items:flex-start}.approval-icon{font-size:18px;color:var(--amber)}.approval h3{font-size:13px;margin:0 0 5px}.approval p{font-size:11px;color:#c8bca9;line-height:1.55;margin:0}.approval-actions{display:flex;gap:8px;margin-top:13px}.approve,.reject{border-radius:8px;padding:9px 12px;font-size:10px;font-weight:750}.approve{border:0;background:#f0bb71;color:#24180a}.reject{border:1px solid #665642;background:transparent;color:#d9c9b3}.status-message{margin-top:11px;color:var(--mint);font-size:11px}.footer{margin-top:21px;border-top:1px solid #ffffff12;padding-top:15px;display:flex;justify-content:space-between;gap:15px;color:var(--dim);font-size:10px;line-height:1.5}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#26384e;color:#eff6ff;border:1px solid #49617b;padding:10px 14px;border-radius:10px;font-size:11px;box-shadow:var(--shadow);z-index:2}.hidden{display:none!important}.loading{display:inline-flex;align-items:center;gap:8px}.spin{width:13px;height:13px;border:2px solid #101c2a66;border-top-color:#101c2a;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:850px){.grid{grid-template-columns:1fr}.input-card{position:static}.hero{padding-top:35px}.hero-stat{display:none}.overview{grid-template-columns:repeat(3,1fr)}}@media(max-width:560px){.shell{padding:15px 14px 38px}.top-right .pill:last-child{display:none}.hero{padding:32px 0 23px}.hero h1{font-size:37px}.overview{grid-template-columns:1fr 1fr}.metric:last-child{grid-column:span 2}.columns{grid-template-columns:1fr}.result,.input-card{padding:16px}.footer{display:block}.footer span{display:block;margin-top:6px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="mark">✳</div>IncidentPilot</div>
+      <div class="top-right"><span class="pill"><i class="dot"></i> Human-supervised agent</span><span class="pill">Sandbox environment</span></div>
+    </header>
+    <section class="hero">
+      <div><div class="eyebrow">Incident response, with a human in command</div><h1>Find the signal.<br>Keep the human in control.</h1><p>An AI incident triage agent that investigates a bounded synthetic environment, shows its evidence, and waits for approval before it simulates a change.</p></div>
+      <div class="hero-stat"><strong>4 bounded tools</strong>Health · logs · runbooks · proposals</div>
+    </section>
+    <section class="grid" aria-label="Incident triage workspace">
+      <aside class="card input-card">
+        <div class="card-head"><h2>Incident context</h2><span class="step-label">01 / Configure</span></div>
+        <div class="field"><label for="scenario">Synthetic incident</label><div class="select-wrap"><select id="scenario" aria-label="Synthetic incident"></select></div><small>All incident data is fictional and bundled with this demo.</small></div>
+        <div class="field"><label>Agent mode</label><div class="mode" role="group" aria-label="Agent mode"><button id="offlineMode" class="active" type="button">Offline demo</button><button id="liveMode" type="button">Live model</button></div><small id="modeHint">BM25 retrieval and deterministic tool flow. No API key or external call.</small></div>
+        <div class="field"><label for="note">Operator note <span style="color:var(--dim);font-weight:400">(optional)</span></label><textarea id="note" maxlength="1200" placeholder="Add a short observation from the incident room…"></textarea><small>In live mode, this text is sent to the configured model provider.</small></div>
+        <div class="privacy">Do not enter passwords, personal information, customer data, or confidential production logs. The sandbox cannot access real services.</div>
+        <div class="field" style="margin-bottom:0"><button id="run" class="primary" type="button">Run incident investigation <span aria-hidden="true">↗</span></button><p class="side-note">The agent can inspect synthetic signals and make a pending proposal. It cannot perform real remediation.</p></div>
+      </aside>
+      <section class="workspace" aria-live="polite">
+        <div class="overview">
+          <div class="card metric"><span>Current mode</span><strong id="modeMetric" class="blue">Offline demo</strong></div>
+          <div class="card metric"><span>Agent status</span><strong id="statusMetric" class="green">Ready to investigate</strong></div>
+          <div class="card metric"><span>Approval gate</span><strong class="amber">Human required</strong></div>
+        </div>
+        <article class="card result" id="resultPanel">
+          <div class="empty" id="empty"><div><div class="empty-icon">⌁</div><h3>Investigation workspace ready</h3><p>Choose a synthetic case and run the agent to see its evidence, tool calls, and any pending action proposal.</p></div></div>
+          <div id="result" class="hidden"></div>
+        </article>
+        <section class="card trace hidden" id="tracePanel"><div class="trace-bar"><h2 class="output-title">Agent tool trace</h2><span>Every tool result is visible</span></div><div class="trace-list" id="traceList"></div></section>
+        <section class="approval hidden" id="approvalPanel"></section>
+      </section>
+    </section>
+    <footer class="footer"><span>IncidentPilot · Portfolio prototype · Synthetic data only</span><span>Model output can be wrong. Verify evidence and follow your organization’s incident process.</span></footer>
+  </main>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script>
+    const state = {mode:"offline", liveAvailable:false, latest:null};
+    const $ = (id) => document.getElementById(id);
+    const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
+    async function api(path, body) {
+      const response = await fetch(path, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
+      return data;
+    }
+    function showToast(message) { const toast=$("toast"); toast.textContent=message; toast.classList.remove("hidden"); setTimeout(()=>toast.classList.add("hidden"),3500); }
+    function setMode(mode) {
+      state.mode=mode;
+      $("offlineMode").classList.toggle("active",mode==="offline");
+      $("liveMode").classList.toggle("active",mode==="live");
+      $("modeMetric").textContent=mode==="offline"?"Offline demo":"Live model";
+      $("modeHint").textContent=mode==="offline"?"BM25 retrieval and deterministic tool flow. No API key or external call.":state.liveAvailable?"Live mode uses embeddings + hybrid retrieval, then sends the incident and note to the configured model provider.":"Live mode is unavailable until OPENAI_API_KEY is configured on the server.";
+    }
+    function renderTrace(trace) {
+      $("traceList").innerHTML=(trace||[]).map((item,index)=>`<details class="trace-item" ${index===0?"open":""}><summary>${escapeHtml(item.name.replaceAll("_"," "))}</summary><pre>${escapeHtml(JSON.stringify({arguments:item.arguments,result:item.result},null,2))}</pre></details>`).join("");
+      $("tracePanel").classList.toggle("hidden",!trace?.length);
+    }
+    function renderApproval(proposal) {
+      const panel=$("approvalPanel");
+      if (!proposal) {panel.classList.add("hidden");panel.innerHTML="";return;}
+      panel.classList.remove("hidden");
+      panel.innerHTML=`<div class="approval-top"><div class="approval-icon">◈</div><div><h3>Approval required · ${escapeHtml(proposal.label)}</h3><p>${escapeHtml(proposal.reason)}</p></div></div><div class="approval-actions"><button class="approve" id="approveAction" type="button">Approve sandbox simulation</button><button class="reject" id="rejectAction" type="button">Reject</button></div><div id="approvalMessage" class="status-message hidden"></div>`;
+      $("approveAction").addEventListener("click",()=>decide(proposal.proposal_id,"approve"));
+      $("rejectAction").addEventListener("click",()=>decide(proposal.proposal_id,"reject"));
+    }
+    async function decide(proposalId, decision) {
+      try {
+        const response=await api("/api/approve",{proposal_id:proposalId,decision});
+        const message=$("approvalMessage");message.textContent=response.message;message.classList.remove("hidden");
+        $("approveAction").disabled=true;$("rejectAction").disabled=true;
+        $("statusMetric").textContent=decision==="approve"?"Simulation recorded":"Proposal rejected";
+        if(state.latest?.proposal) state.latest.proposal.status=response.status;
+      } catch(error) {showToast(error.message);}
+    }
+    function render(data) {
+      state.latest=data;
+      $("empty").classList.add("hidden");$("result").classList.remove("hidden");
+      $("modeMetric").textContent=data.mode;
+      $("statusMetric").textContent=data.proposal?"Waiting for approval":"Assessment ready";
+      const retrieval=data.trace?.find(item=>item.name==="retrieve_knowledge")?.result;
+      const sources=retrieval?.results||[];
+      $("result").innerHTML=`<div class="result-head"><div><h2 class="output-title">Investigation assessment</h2><p>${escapeHtml(data.scenario.replaceAll("-"," "))} · Retrieval: ${escapeHtml(data.retrieval_method||retrieval?.method||"not reported")}</p></div><span class="label">${escapeHtml(data.mode)}</span></div><p class="assessment">${escapeHtml(data.assessment).replaceAll("\n","<br>")}</p><div class="columns"><div class="subcard"><h3>Evidence collected</h3><ul>${(data.evidence||[]).map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ul></div><div class="subcard"><h3>Uncertainty & next step</h3><p><strong>Limits:</strong> ${escapeHtml(data.uncertainty)}</p><p><strong>Next:</strong> ${escapeHtml(data.safe_next_step)}</p></div></div>${sources.length?`<div class="subcard" style="margin-top:12px"><h3>Retrieved knowledge · cite these source IDs</h3><ul>${sources.map(item=>`<li><strong>[${escapeHtml(item.source_id)}] ${escapeHtml(item.title)}</strong> · score ${escapeHtml(item.score)}<br>${escapeHtml(item.text)}</li>`).join("")}</ul></div>`:""}`;
+      renderTrace(data.trace);renderApproval(data.proposal);
+    }
+    async function run() {
+      const button=$("run");button.disabled=true;button.innerHTML='<span class="loading"><i class="spin"></i> Investigating…</span>';
+      $("statusMetric").textContent="Running bounded tools";
+      $("approvalPanel").classList.add("hidden");$("tracePanel").classList.add("hidden");
+      try {
+        const data=await api("/api/run",{scenario:$("scenario").value,mode:state.mode,note:$("note").value});
+        render(data);
+      } catch(error) {
+        $("statusMetric").textContent="Investigation stopped";showToast(error.message);
+      } finally {button.disabled=false;button.innerHTML='Run incident investigation <span aria-hidden="true">↗</span>';}
+    }
+    async function init() {
+      try {
+        const [status,cases]=await Promise.all([fetch("/api/status").then(r=>r.json()),fetch("/api/scenarios").then(r=>r.json())]);
+        state.liveAvailable=status.live_available;
+        $("scenario").innerHTML=cases.scenarios.map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.title)}</option>`).join("");
+        $("liveMode").disabled=!state.liveAvailable;
+        $("liveMode").title=state.liveAvailable?"Use configured live model":"Configure OPENAI_API_KEY on server to enable";
+        setMode("offline");
+        if(status.retrieval){$("modeHint").textContent=`BM25 retrieval is ready across ${status.retrieval.document_chunks} local runbook chunks. Live embedding model: ${escapeHtml(status.retrieval.embedding_model)}.`;}
+      } catch(error) {showToast(`Could not connect to local agent: ${error.message}`);}
+    }
+    $("offlineMode").addEventListener("click",()=>setMode("offline"));
+    $("liveMode").addEventListener("click",()=>{if(state.liveAvailable)setMode("live");else showToast("Live mode requires OPENAI_API_KEY on the server.");});
+    $("run").addEventListener("click",run);
+    init();
+  </script>
+</body>
+</html>
